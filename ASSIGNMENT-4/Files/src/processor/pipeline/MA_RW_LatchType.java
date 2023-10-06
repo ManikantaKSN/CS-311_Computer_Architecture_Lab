@@ -9,6 +9,12 @@ public class MA_RW_LatchType {
 	int ldResult;
 	boolean RW_Lock;
 
+	public MA_RW_LatchType()
+	{
+		RW_enable = false;
+		RW_Lock = false;
+	}
+	
 	public void setInstruction(Instruction instruction){
 		this.instruction = instruction;
 	}
@@ -32,12 +38,6 @@ public class MA_RW_LatchType {
 	public int getLdResult(){
 		return this.ldResult;
 	}
-	
-	public MA_RW_LatchType()
-	{
-		RW_enable = false;
-		RW_Lock = false;
-	}
 
 	public boolean isRW_enable() {
 		return RW_enable;
@@ -47,8 +47,12 @@ public class MA_RW_LatchType {
 		RW_enable = rw_enable;
 	}
 
-	public boolean isRW_Locked() { return RW_Lock; }
+	public boolean isRW_Locked() {
+		return RW_Lock; 
+	}
 
-	public void setRW_Lock(boolean rw_lock) { RW_Lock = rw_lock; }
+	public void setRW_Lock(boolean rw_lock) { 
+		RW_Lock = rw_lock; 
+	}
 
 }

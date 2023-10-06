@@ -3,9 +3,7 @@ package processor.pipeline;
 import generic.Instruction;
 import generic.Operand;
 import generic.Statistics;
-import jdk.dynalink.beans.StaticClass;
 import processor.Processor;
-
 import java.util.*;
 
 import generic.Instruction.OperationType;

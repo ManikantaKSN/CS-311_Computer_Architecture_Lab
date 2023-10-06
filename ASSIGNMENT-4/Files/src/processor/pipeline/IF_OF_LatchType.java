@@ -14,8 +14,8 @@ public class IF_OF_LatchType {
 		return OF_enable;
 	}
 
-	public void setOF_enable(boolean oF_enable) {
-		OF_enable = oF_enable;
+	public void setOF_enable(boolean val) {
+		OF_enable = val;
 	}
 
 	public int getInstruction() {

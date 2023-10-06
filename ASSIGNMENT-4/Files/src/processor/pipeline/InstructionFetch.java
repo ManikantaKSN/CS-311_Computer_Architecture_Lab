@@ -28,16 +28,11 @@ public class InstructionFetch {
 			}
 
 			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-
 			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
-
 			IF_OF_Latch.setInstruction(newInstruction);
 			containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
 			
-			//IF_EnableLatch.setIF_enable(false);
 			IF_OF_Latch.setOF_enable(true);
-
-			System.out.println("\nIF Stage" + " Current PC: " + currentPC);
 		}
 	}
 

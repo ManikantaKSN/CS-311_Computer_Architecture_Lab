@@ -26,9 +26,7 @@ public class RegisterWrite {
 		else if(MA_RW_Latch.isRW_enable()) {
 			Statistics.setNumberOfRWStageInstructions(Statistics.getNumberOfRWStageInstructions() + 1);
 			Instruction currentInstruction = MA_RW_Latch.getInstruction();
-			OperationType currentOperation = currentInstruction.getOperationType();
-			int currentPC = currentInstruction.getProgramCounter();
-			int rd = -1;
+			OperationType currentOperation = currentInstruction.getOperationType();			int rd = -1;
 			int ldResult = -1;
 			int aluResult = -1;
 			switch (currentOperation){
@@ -56,14 +54,6 @@ public class RegisterWrite {
 			if(currentOperation != OperationType.end){
 				IF_EnableLatch.setIF_enable(true);
 			}
-
-			if(rd != -1){
-				if(ldResult != -1)
-					System.out.println("\nRW Stage" + "Current PC: " + currentPC +" Storing = " + ldResult + " at register = " + rd);
-				else
-					System.out.println("\nRW Stage" + "Current PC: " + currentPC +" Storing = " + aluResult + " at register = " + rd);
-			}
 		}
 	}
-
 }

@@ -29,17 +29,14 @@ public class MemoryAccess {
 			Instruction currentInstruction = EX_MA_Latch.getInstruction();
 			int aluResult = EX_MA_Latch.getAluResult();
 			OperationType currentOperation = currentInstruction.getOperationType();
-			int currentPC = currentInstruction.getProgramCounter();
 
 			if(currentOperation == OperationType.load){
 				int ldResult = containingProcessor.getMainMemory().getWord(aluResult);
 				MA_RW_Latch.setLdResult(ldResult);
-				System.out.println("\nMA Stage: " + " Current PC: " + currentPC + " Operation: " + currentOperation.name() + " ld Result: " + ldResult);
 			}
 			else if(currentOperation == OperationType.store){
 				int stWord = containingProcessor.getRegisterFile().getValue(currentInstruction.getSourceOperand1().getValue());
 				containingProcessor.getMainMemory().setWord(aluResult, stWord);
-				System.out.println("\nMA Stage: " + " Current PC: " + currentPC + " Operation: " + currentOperation.name() + " Storing: " + stWord + " into Memory location: " + aluResult);
 			}
 			else if(currentOperation == OperationType.end){
 				IF_EnableLatch.setIF_enable(false);
