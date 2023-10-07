@@ -27,32 +27,26 @@ public class OperandFetch {
 	}
 
 	//Method to find two's complement
-	public static String twoscomplement(StringBuffer str)
+	public String twoscomplement(StringBuffer str)
 	{
 		int n = str.length();
-
 		int i;
 		for (i = n-1 ; i >= 0 ; i--)
 			if (str.charAt(i) == '1')
 				break;
-
 		if (i == -1)
 			return "1" + str;
-
 		for (int k = i-1 ; k >= 0; k--)
 		{
-			//Flipping the values
 			if (str.charAt(k) == '1')
 				str.replace(k, k+1, "0");
 			else
 				str.replace(k, k+1, "1");
 		}
-
-		// return the 2's complement
 		return str.toString();
 	}
 
-	public static String toBinary(int x, int len){
+	public String toBinary(int x, int len){
 		if (len > 0) {
 			return String.format("%" + len + "s",
 					Integer.toBinaryString(x)).replace(" ", "0");
@@ -60,7 +54,7 @@ public class OperandFetch {
 		return null;
 	}
 
-	public static int toInteger(String binary){
+	public int toInteger(String binary){
 		if(binary.charAt(0) == '1'){
 			StringBuffer bufferBinary = new StringBuffer();
 			bufferBinary.append(binary);
@@ -72,12 +66,8 @@ public class OperandFetch {
 		return Integer.parseInt(binary, 2);
 	}
 
-	//enum ConflictOperations {add, addi, sub, subi, mul, muli, div, divi, and, andi, or, ori, xor, xori, slt, slti, sll, slli, srl, srli, sra, srai, load, store};
-
 	public boolean isConflict(int rs1, int rs2){
-
 		boolean returnValue;
-
 		// Creating Conflict Operations Set
 		Set<String> ConflictInstructions = new HashSet<String>();
 		//Adding Instructions that can cause conflict
@@ -117,9 +107,9 @@ public class OperandFetch {
 		Instruction RW_Stage_Ins = MA_RW_Latch.getInstruction();
 
 		//Conflict check due to RAW Hazard
-		int ex_rd = -5;
-		int ma_rd = -5;
-		int rw_rd = -5;
+		int ex_rd = -100;
+		int ma_rd = -100;
+		int rw_rd = -100;
 		boolean isEXDiv = false;
 		boolean isMADiv = false;
 		boolean isRWDiv = false;
@@ -173,20 +163,11 @@ public class OperandFetch {
 				returnValue = false;
 			}
 		}
-		System.out.println("\nConflict Checking");
-		if(ex_rd != -5)
-			System.out.println("EX rd = " + ex_rd);
-		if(ma_rd != -5)
-			System.out.println("MA rd = " + ma_rd);
-		if(rw_rd != -5)
-			System.out.println("RW rd = " + rw_rd);
-		System.out.println("rs1 = " + rs1);
-		System.out.println("rs2 = " + rs2);
 		return returnValue;
 	}
 
 	public void conflictObserved(){
-		System.out.println("Conflict and Lock");
+		// System.out.println("Conflict and Lock");
 		IF_EnableLatch.setIF_enable(false);
 		OF_EX_Latch.setEX_Lock(true);
 	}
@@ -196,26 +177,28 @@ public class OperandFetch {
 		if(IF_OF_Latch.isOF_enable())
 		{
 			Statistics.setNumberOfOFStageInstructions(Statistics.getNumberOfOFStageInstructions() + 1);
-			int Instruction = IF_OF_Latch.getInstruction();
-			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-			String binaryInstruction =  toBinary(Instruction, 32);
+			int inst = IF_OF_Latch.getInstruction();
+			int curr_pc = containingProcessor.getRegisterFile().getProgramCounter();
+			String binaryInst =  toBinary(inst, 32);
 
 			OperationType[] operationTypes = OperationType.values(); //getting all operation types from OperationType enum
-			int opCodeInt = Integer.parseInt(binaryInstruction.substring(0, 5), 2);
-			OperationType currentOperation = operationTypes[opCodeInt];
+			int opCodeInt = Integer.parseInt(binaryInst.substring(0, 5), 2);
+			OperationType opr = operationTypes[opCodeInt];
 
-			Instruction currentInstruction = new Instruction();
+			Instruction instr = new Instruction();
 			Operand rs1 = new Operand();
 			Operand rs2 = new Operand();
 			Operand rd = new Operand();
 			Operand jump = new Operand();
 			Operand imm = new Operand();
-			int registerSource1 = -1;
-			int registerSource2 = -1;
-			int registerDestination = -1;
+			int needtow = 0;
+			int chk = 0;
+			int regsrc1 = -1;
+			int regsrc2 = -1;
+			int regdest = -1;
 			int immediate = -1;
-			currentInstruction.setProgramCounter(currentPC);
-			currentInstruction.setOperationType(currentOperation);
+			instr.setProgramCounter(curr_pc);
+			instr.setOperationType(opr);
 
 			//Creating set of branch instructions
 			Set<String> BranchInstructions = new HashSet<String>();
@@ -226,124 +209,111 @@ public class OperandFetch {
 			BranchInstructions.add("blt");
 			BranchInstructions.add("bgt");
 
-			if(BranchInstructions.contains(currentOperation.name())){
+			if(BranchInstructions.contains(opr.name())){
 				IF_EnableLatch.setIF_enable(false);
 			}
 
-			switch(currentOperation){
-				//below till break correspond to R3I type instructions
-				case add:
-				case sub:
-				case mul:
-				case div:
-				case and:
-				case or:
-				case xor:
-				case slt:
-				case sll:
-				case srl:
-				case sra:
+			if(opr == OperationType.add || opr == OperationType.sub || opr == OperationType.mul || opr == OperationType.div ||
+			opr == OperationType.and || opr == OperationType.or || opr == OperationType.xor ||opr == OperationType.slt ||
+			opr == OperationType.sll || opr == OperationType.srl || opr == OperationType.sra){ 
+					needtow =1; //R3 type
 					rs1.setOperandType(Operand.OperandType.Register);
-					registerSource1 = Integer.parseInt((binaryInstruction.substring(5, 10)), 2);
-					rs1.setValue(registerSource1);
-
-
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					rs1.setValue(regsrc1);
+					
 					rs2.setOperandType(Operand.OperandType.Register);
-					registerSource2 = Integer.parseInt((binaryInstruction.substring(10, 15)), 2);
-					rs2.setValue(registerSource2);
-
-
+					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+					rs2.setValue(regsrc2);
+					
 					rd.setOperandType(Operand.OperandType.Register);
-					registerDestination = Integer.parseInt((binaryInstruction.substring(15, 20)), 2);
-					rd.setValue(registerDestination);
-
-
-					if(isConflict(registerSource1, registerSource2)){
+					regdest = Integer.parseInt((binaryInst.substring(15, 20)), 2);
+					rd.setValue(regdest);
+					
+					if(isConflict(regsrc1, regsrc2)){
 						this.conflictObserved();
-						break;
+						chk = 1;
 					}
 
-					currentInstruction.setSourceOperand1(rs1);
-					currentInstruction.setSourceOperand2(rs2);
-					currentInstruction.setDestinationOperand(rd);
-					break;
-				//below code till break corresponds to RI type, specifically for jmp
-				case jmp:
-					registerDestination = Integer.parseInt((binaryInstruction.substring(5, 10)), 2);
-					immediate = toInteger(binaryInstruction.substring(10, 32));
+					if(chk == 0){
+					instr.setSourceOperand1(rs1);
+					instr.setSourceOperand2(rs2);
+					instr.setDestinationOperand(rd);
+					}
+			}
+			else if(opr == OperationType.beq || opr == OperationType.bgt || opr == OperationType.blt || opr == OperationType.bne){
+					needtow = 3;
+					rs1.setOperandType(Operand.OperandType.Register);
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					rs1.setValue(regsrc1);
+					
+					rs2.setOperandType(Operand.OperandType.Register);
+					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+					rs2.setValue(regsrc2);
+					
+					imm.setOperandType(Operand.OperandType.Immediate);
+					immediate = toInteger(binaryInst.substring(15, 32));
+					imm.setValue(immediate);
+					
+					if(isConflict(regsrc1, regsrc2)){
+						this.conflictObserved();
+						chk = 1;
+					}
+
+					if(chk == 0){
+					instr.setSourceOperand1(rs1);
+					instr.setSourceOperand2(rs2);
+					instr.setDestinationOperand(imm);
+					}
+			}
+			else if(opr == OperationType.jmp){
+					needtow =2;
+					regdest = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					immediate = toInteger(binaryInst.substring(10, 32));
 					if(immediate != 0){
 						jump.setOperandType(Operand.OperandType.Immediate);
 						jump.setValue(immediate);
 					}
 					else{
 						jump.setOperandType(Operand.OperandType.Register);
-						jump.setValue(registerDestination);
+						jump.setValue(regdest);
 					}
-					currentInstruction.setDestinationOperand(jump);
-					break;
-				//below code till break corresponds to RI type, specifically for end
-				case end:
-					IF_EnableLatch.setIF_enable(false);
-					break;
-				//below code till break corresponds to R2I type instructions, specifically for beq, bnq, blt and bgt
-				case beq:
-				case bne:
-				case blt:
-				case bgt:
-					rs1.setOperandType(Operand.OperandType.Register);
-					registerSource1 = Integer.parseInt((binaryInstruction.substring(5, 10)), 2);
-					rs1.setValue(registerSource1);
-
-					rs2.setOperandType(Operand.OperandType.Register);
-					registerSource2 = Integer.parseInt((binaryInstruction.substring(10, 15)), 2);
-					rs2.setValue(registerSource2);
-
-					imm.setOperandType(Operand.OperandType.Immediate);
-					immediate = toInteger(binaryInstruction.substring(15, 32));
-					imm.setValue(immediate);
-
-					if(isConflict(registerSource1, registerSource2)){
-						this.conflictObserved();
-						break;
-					}
-
-					currentInstruction.setSourceOperand1(rs1);
-					currentInstruction.setSourceOperand2(rs2);
-					currentInstruction.setDestinationOperand(imm);
-					break;
-				//below code till break corresponds to all remaining R2I type instructions
-				default:
-					rs1.setOperandType(Operand.OperandType.Register);
-					registerSource1 = Integer.parseInt((binaryInstruction.substring(5, 10)), 2);
-					rs1.setValue(registerSource1);
-
-					rs2.setOperandType(Operand.OperandType.Immediate);
-					immediate = toInteger(binaryInstruction.substring(15, 32));
-					rs2.setValue(immediate);
-
-					rd.setOperandType(Operand.OperandType.Register);
-					registerDestination = Integer.parseInt((binaryInstruction.substring(10, 15)), 2);
-					rd.setValue(registerDestination);
-
-					if(isConflict(registerSource1, registerSource1)){
-						this.conflictObserved();
-						break;
-					}
-
-					currentInstruction.setSourceOperand1(rs1);
-					currentInstruction.setSourceOperand2(rs2);
-					currentInstruction.setDestinationOperand(rd);
-					break;
+					instr.setDestinationOperand(jump); 
 			}
+			else if( opr == OperationType.end){
+				needtow =5;
+				IF_EnableLatch.setIF_enable(false);
+			}
+			else{
+					//for R2I types
+					needtow = 4;
+					rs1.setOperandType(Operand.OperandType.Register);
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					rs1.setValue(regsrc1);
+					
+					rs2.setOperandType(Operand.OperandType.Immediate);
+					immediate = toInteger(binaryInst.substring(15, 32));
+					rs2.setValue(immediate);
+					
+					rd.setOperandType(Operand.OperandType.Register);
+					regdest = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+					rd.setValue(regdest);
+					
+					if(isConflict(regsrc1, regsrc1)){
+						this.conflictObserved();
+						chk = 1;
+					}
 
-			OF_EX_Latch.setInstruction(currentInstruction);
+					if(chk == 0){
+					instr.setSourceOperand1(rs1);
+					instr.setSourceOperand2(rs2);
+					instr.setDestinationOperand(rd);
+					}
+			}
+			if(needtow!=0){
+			//System.out.println("Status:" + needtow);
+			}
+			OF_EX_Latch.setInstruction(instr);
 			OF_EX_Latch.setEX_enable(true);
-
-			if(immediate != -1)
-				System.out.println("\nOF Stage" + " Current PC: " + currentPC + " Instruction: " + binaryInstruction + " rs1: " + registerSource1 + " rs2: " + registerSource2 + " rd: " + registerDestination + " immediate: " + immediate);
-			else
-				System.out.println("\nOF Stage" + " Instruction: " + binaryInstruction + " rs1: " + registerSource1 + " rs2: " + registerSource2 + " rd: " + registerDestination);
-
 		}
 	}
 }

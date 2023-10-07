@@ -26,23 +26,23 @@ public class MemoryAccess {
 			EX_MA_Latch.setMA_Lock(false);
 		}
 		else if(EX_MA_Latch.isMA_enable()){
-			Instruction currentInstruction = EX_MA_Latch.getInstruction();
+			Instruction inst = EX_MA_Latch.getInstruction();
 			int aluResult = EX_MA_Latch.getAluResult();
-			OperationType currentOperation = currentInstruction.getOperationType();
+			OperationType opr = inst.getOperationType();
 
-			if(currentOperation == OperationType.load){
+			if(opr == OperationType.load){
 				int ldResult = containingProcessor.getMainMemory().getWord(aluResult);
 				MA_RW_Latch.setLdResult(ldResult);
 			}
-			else if(currentOperation == OperationType.store){
-				int stWord = containingProcessor.getRegisterFile().getValue(currentInstruction.getSourceOperand1().getValue());
+			else if(opr == OperationType.store){
+				int stWord = containingProcessor.getRegisterFile().getValue(inst.getSourceOperand1().getValue());
 				containingProcessor.getMainMemory().setWord(aluResult, stWord);
 			}
-			else if(currentOperation == OperationType.end){
+			else if(opr == OperationType.end){
 				IF_EnableLatch.setIF_enable(false);
 			}
 			MA_RW_Latch.setAluResult(aluResult);
-			MA_RW_Latch.setInstruction(currentInstruction);
+			MA_RW_Latch.setInstruction(inst);
 			MA_RW_Latch.setRW_enable(true);
 		}
 	}

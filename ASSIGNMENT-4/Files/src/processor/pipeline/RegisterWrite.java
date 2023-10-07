@@ -25,33 +25,33 @@ public class RegisterWrite {
 		}
 		else if(MA_RW_Latch.isRW_enable()) {
 			Statistics.setNumberOfRWStageInstructions(Statistics.getNumberOfRWStageInstructions() + 1);
-			Instruction currentInstruction = MA_RW_Latch.getInstruction();
-			OperationType currentOperation = currentInstruction.getOperationType();			int rd = -1;
+			Instruction inst = MA_RW_Latch.getInstruction();
+			OperationType opr = inst.getOperationType();			
+			int rd = -1;
 			int ldResult = -1;
 			int aluResult = -1;
-			switch (currentOperation){
-				case store:
-				case jmp:
-				case beq:
-				case blt:
-				case bgt:
-					break;
-				case end:
-					Simulator.setSimulationComplete(true);
-					break;
-				case load:
-					ldResult = MA_RW_Latch.getLdResult();
-					rd = currentInstruction.getDestinationOperand().getValue();
-					containingProcessor.getRegisterFile().setValue(rd, ldResult);
-					break;
-				default:
-					rd = currentInstruction.getDestinationOperand().getValue();
-					aluResult = MA_RW_Latch.getAluResult();
-					containingProcessor.getRegisterFile().setValue(rd, aluResult);
-					break;
+			boolean sett = true;
+			if(opr == OperationType.store || opr == OperationType.beq || opr == OperationType.bgt ||
+			opr == OperationType.blt || opr == OperationType.jmp){
+				sett = false;
 			}
-
-			if(currentOperation != OperationType.end){
+			else if(opr == OperationType.end){
+				Simulator.setSimulationComplete(true);
+			}
+			else if(opr == OperationType.load){
+				sett = false;
+				ldResult = MA_RW_Latch.getLdResult();
+				rd = inst.getDestinationOperand().getValue();
+				containingProcessor.getRegisterFile().setValue(rd, ldResult);
+			}
+			else{
+				//for alu op and call instruction
+				sett = false;
+				rd = inst.getDestinationOperand().getValue();
+				aluResult = MA_RW_Latch.getAluResult();
+				containingProcessor.getRegisterFile().setValue(rd, aluResult);
+			}
+			if(opr != OperationType.end && sett == false){
 				IF_EnableLatch.setIF_enable(true);
 			}
 		}
