@@ -67,13 +67,12 @@ public class Simulator {
 			}
 
 			//writing instructions to main memory
-			trl = bis.read(temp, 0, 4);
-			while (trl != -1) {
+			;
+			while (((trl = bis.read(temp, 0, 4))!= -1)) {
 				n2 += 1;
 				int ins = ByteBuffer.wrap(temp).getInt(); //temporary integer to store one instruction
 				processor.getMainMemory().setWord(n2, ins);
 				cnt += 1;
-				trl = bis.read(temp, 0, 4);
 			}
 			// System.out.println(check);
 			if(check){
@@ -96,15 +95,11 @@ public class Simulator {
 
 		while(simulationComplete == false)
 		{
-			processor.getIFUnit().performIF();
-			Clock.incrementClock();
-			processor.getOFUnit().performOF();
-			Clock.incrementClock();
-			processor.getEXUnit().performEX();
-			Clock.incrementClock();
-			processor.getMAUnit().performMA();
-			Clock.incrementClock();
 			processor.getRWUnit().performRW();
+			processor.getMAUnit().performMA();
+			processor.getEXUnit().performEX();
+			processor.getOFUnit().performOF();
+			processor.getIFUnit().performIF();
 			Clock.incrementClock();
 
 			Statistics.setNumberOfInstructions(Statistics.getNumberOfInstructions() + 1);

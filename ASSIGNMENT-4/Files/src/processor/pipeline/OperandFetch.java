@@ -27,7 +27,7 @@ public class OperandFetch {
 	}
 
 	//Method to find two's complement
-	public String twoscomplement(StringBuffer str)
+	String twoscomplement(StringBuffer str)
 	{
 		int n = str.length();
 		int i;
@@ -46,7 +46,7 @@ public class OperandFetch {
 		return str.toString();
 	}
 
-	public String toBinary(int x, int len){
+	String toBinary(int x, int len){
 		if (len > 0) {
 			return String.format("%" + len + "s",
 					Integer.toBinaryString(x)).replace(" ", "0");
@@ -54,7 +54,7 @@ public class OperandFetch {
 		return null;
 	}
 
-	public int toInteger(String binary){
+	int toInteger(String binary){
 		if(binary.charAt(0) == '1'){
 			StringBuffer bufferBinary = new StringBuffer();
 			bufferBinary.append(binary);
@@ -66,7 +66,7 @@ public class OperandFetch {
 		return Integer.parseInt(binary, 2);
 	}
 
-	public boolean isConflict(int rs1, int rs2){
+	boolean isConflict(int rs1, int rs2){
 		boolean returnValue;
 		// Creating Conflict Operations Set
 		Set<String> ConflictInstructions = new HashSet<String>();
@@ -107,9 +107,9 @@ public class OperandFetch {
 		Instruction RW_Stage_Ins = MA_RW_Latch.getInstruction();
 
 		//Conflict check due to RAW Hazard
-		int ex_rd = -100;
-		int ma_rd = -100;
-		int rw_rd = -100;
+		int ex_rd = -5;
+		int ma_rd = -5;
+		int rw_rd = -5;
 		boolean isEXDiv = false;
 		boolean isMADiv = false;
 		boolean isRWDiv = false;
@@ -156,7 +156,6 @@ public class OperandFetch {
 		//Conflict check due to Division
 		if(isEXDiv || isMADiv || isRWDiv){
 			if(rs1 == 31 || rs2 == 31){
-				System.out.println("Conflict due to Division");
 				returnValue = true;
 			}
 			else if(!returnValue){
@@ -166,8 +165,7 @@ public class OperandFetch {
 		return returnValue;
 	}
 
-	public void conflictObserved(){
-		// System.out.println("Conflict and Lock");
+	void conflictObserved(){
 		IF_EnableLatch.setIF_enable(false);
 		OF_EX_Latch.setEX_Lock(true);
 	}
@@ -200,16 +198,8 @@ public class OperandFetch {
 			instr.setProgramCounter(curr_pc);
 			instr.setOperationType(opr);
 
-			//Creating set of branch instructions
-			Set<String> BranchInstructions = new HashSet<String>();
-			//Adding the branch instructions
-			BranchInstructions.add("jmp");
-			BranchInstructions.add("beq");
-			BranchInstructions.add("bne");
-			BranchInstructions.add("blt");
-			BranchInstructions.add("bgt");
-
-			if(BranchInstructions.contains(opr.name())){
+			if(opr == OperationType.jmp || opr == OperationType.beq || opr == OperationType.bgt
+			|| opr == OperationType.bne || opr == OperationType.blt) {
 				IF_EnableLatch.setIF_enable(false);
 			}
 
@@ -218,15 +208,15 @@ public class OperandFetch {
 			opr == OperationType.sll || opr == OperationType.srl || opr == OperationType.sra){ 
 					needtow =1; //R3 type
 					rs1.setOperandType(Operand.OperandType.Register);
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					rs1.setValue(regsrc1);
-					
-					rs2.setOperandType(Operand.OperandType.Register);
-					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
-					rs2.setValue(regsrc2);
-					
+				    rs2.setOperandType(Operand.OperandType.Register);
 					rd.setOperandType(Operand.OperandType.Register);
+
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
 					regdest = Integer.parseInt((binaryInst.substring(15, 20)), 2);
+
+					rs1.setValue(regsrc1);
+					rs2.setValue(regsrc2);
 					rd.setValue(regdest);
 					
 					if(isConflict(regsrc1, regsrc2)){
@@ -243,15 +233,15 @@ public class OperandFetch {
 			else if(opr == OperationType.beq || opr == OperationType.bgt || opr == OperationType.blt || opr == OperationType.bne){
 					needtow = 3;
 					rs1.setOperandType(Operand.OperandType.Register);
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					rs1.setValue(regsrc1);
-					
 					rs2.setOperandType(Operand.OperandType.Register);
-					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
-					rs2.setValue(regsrc2);
-					
 					imm.setOperandType(Operand.OperandType.Immediate);
+
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
 					immediate = toInteger(binaryInst.substring(15, 32));
+
+					rs1.setValue(regsrc1);
+					rs2.setValue(regsrc2);
 					imm.setValue(immediate);
 					
 					if(isConflict(regsrc1, regsrc2)){
@@ -287,15 +277,15 @@ public class OperandFetch {
 					//for R2I types
 					needtow = 4;
 					rs1.setOperandType(Operand.OperandType.Register);
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					rs1.setValue(regsrc1);
-					
 					rs2.setOperandType(Operand.OperandType.Immediate);
-					immediate = toInteger(binaryInst.substring(15, 32));
-					rs2.setValue(immediate);
-					
 					rd.setOperandType(Operand.OperandType.Register);
+
+					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+					immediate = toInteger(binaryInst.substring(15, 32));
 					regdest = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+
+					rs1.setValue(regsrc1);
+					rs2.setValue(immediate);
 					rd.setValue(regdest);
 					
 					if(isConflict(regsrc1, regsrc1)){
