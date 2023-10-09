@@ -29,7 +29,7 @@ public class Execute {
 		if(OF_EX_Latch.isEX_Locked()){
 			EX_MA_Latch.setMA_Lock(true);
 			OF_EX_Latch.setEX_Lock(false);
-			EX_MA_Latch.setInstruction(null);
+			EX_MA_Latch.setInstruction(null);//null = nop
 		}
 		else if(OF_EX_Latch.isEX_enable()){
 			Instruction instr = OF_EX_Latch.getInstruction();
