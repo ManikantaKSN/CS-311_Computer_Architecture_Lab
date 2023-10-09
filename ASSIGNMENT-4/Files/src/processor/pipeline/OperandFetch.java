@@ -158,9 +158,6 @@ public class OperandFetch {
 			if(rs1 == 31 || rs2 == 31){
 				returnValue = true;
 			}
-			else if(!returnValue){
-				returnValue = false;
-			}
 		}
 		return returnValue;
 	}
