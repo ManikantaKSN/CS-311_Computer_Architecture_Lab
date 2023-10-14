@@ -8,11 +8,13 @@ public class EX_MA_LatchType {
 	Instruction instruction;
 	int aluResult;
 	boolean MA_Lock;
+	boolean MA_Busy;
 
 	public EX_MA_LatchType()
 	{
 		MA_enable = false;
 		MA_Lock = false;
+		MA_Busy = false;
 	} 
 	
 	public void setInstruction(Instruction instruction){
@@ -45,6 +47,14 @@ public class EX_MA_LatchType {
 
 	public void setMA_Lock(boolean val) {
 		MA_Lock = val; 
+	}
+
+	public void setMA_Busy(boolean ma_busy) { 
+		MA_Busy = ma_busy; 
+	}
+
+	public boolean isMA_Busy() { 
+		return MA_Busy; 
 	}
 
 }

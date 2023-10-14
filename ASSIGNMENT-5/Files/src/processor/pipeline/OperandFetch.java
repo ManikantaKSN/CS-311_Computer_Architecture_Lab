@@ -301,6 +301,9 @@ public class OperandFetch {
 			}
 			OF_EX_Latch.setInstruction(instr);
 			OF_EX_Latch.setEX_enable(true);
+			if(!OF_EX_Latch.isEX_Locked()){
+				IF_OF_Latch.setOF_enable(false);
+			}
 		}
 	}
 }
