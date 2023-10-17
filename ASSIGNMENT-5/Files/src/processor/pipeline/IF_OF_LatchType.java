@@ -28,8 +28,8 @@ public class IF_OF_LatchType {
 		this.instruction = instruction;
 	}
 
-	public void setOF_Busy(boolean of_busy) {
-		OF_Busy = of_busy; 
+	public void setOF_Busy(boolean val) {
+		OF_Busy = val; 
 	}
 
 	public boolean isOF_Busy() {

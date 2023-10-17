@@ -61,8 +61,8 @@ public class MemoryAccess implements Element{
 								containingProcessor.getMainMemory(), aluResult,	stWord));
 					EX_MA_Latch.setMA_Busy(true);
 					return;		
-							}
-				else if(opr == OperationType.end){
+				}
+				if(opr == OperationType.end){
 					IF_EnableLatch.setIF_enable(false);
 				}
 				MA_RW_Latch.setAluResult(aluResult);
@@ -71,7 +71,6 @@ public class MemoryAccess implements Element{
 				EX_MA_Latch.setMA_enable(false);
 			}
 		}
-	
 	}
 	@Override
 	public void handleEvent(Event e) {
@@ -80,11 +79,9 @@ public class MemoryAccess implements Element{
 			int ldResult = event.getValue();
 			MA_RW_Latch.setLdResult(ldResult);
 			MA_RW_Latch.setInstruction(instruction);
-
 			EX_MA_Latch.setMA_Busy(false);
 			MA_RW_Latch.setRW_enable(true);
 			OF_EX_Latch.setEX_Busy(false);
-			System.out.println("MA Load Event Handled");
 			EX_MA_Latch.setMA_enable(false);
 		}
 	}

@@ -49,8 +49,8 @@ public class EX_MA_LatchType {
 		MA_Lock = val; 
 	}
 
-	public void setMA_Busy(boolean ma_busy) { 
-		MA_Busy = ma_busy; 
+	public void setMA_Busy(boolean val) { 
+		MA_Busy = val; 
 	}
 
 	public boolean isMA_Busy() { 

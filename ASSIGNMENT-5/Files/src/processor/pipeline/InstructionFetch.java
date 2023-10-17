@@ -52,13 +52,11 @@ public class InstructionFetch implements Element {
 	@Override
 	public void handleEvent(Event e) {
 		if(IF_OF_Latch.isOF_Busy()) {
-			System.out.println("IF_OF Latch is Busy");
 			e.setEventTime(Clock.getCurrentTime() + 1);
 			Simulator.getEventQueue().addEvent(e);
 		}
 		else if (e.getEventType() == Event.EventType.MemoryResponse){
 			MemoryResponseEvent event = (MemoryResponseEvent) e ;
-			System.out.println("IF Event Handled");
 			IF_OF_Latch.setInstruction(event.getValue());
 
 			IF_EnableLatch.setIF_Busy(false);

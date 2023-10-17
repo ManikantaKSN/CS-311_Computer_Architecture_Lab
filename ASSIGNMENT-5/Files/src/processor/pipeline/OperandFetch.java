@@ -5,7 +5,6 @@ import generic.Operand;
 import generic.Statistics;
 import processor.Processor;
 import java.util.*;
-
 import generic.Instruction.OperationType;
 
 public class OperandFetch {
@@ -169,140 +168,146 @@ public class OperandFetch {
 
 	public void performOF()
 	{
-		if(IF_OF_Latch.isOF_enable())
-		{
-			Statistics.setNumberOfOFStageInstructions(Statistics.getNumberOfOFStageInstructions() + 1);
-			int inst = IF_OF_Latch.getInstruction();
-			int curr_pc = containingProcessor.getRegisterFile().getProgramCounter();
-			String binaryInst =  toBinary(inst, 32);
-
-			OperationType[] operationTypes = OperationType.values(); //getting all operation types from OperationType enum
-			int opCodeInt = Integer.parseInt(binaryInst.substring(0, 5), 2);
-			OperationType opr = operationTypes[opCodeInt];
-
-			Instruction instr = new Instruction();
-			Operand rs1 = new Operand();
-			Operand rs2 = new Operand();
-			Operand rd = new Operand();
-			Operand jump = new Operand();
-			Operand imm = new Operand();
-			int needtow = 0;
-			int chk = 0;
-			int regsrc1 = -1;
-			int regsrc2 = -1;
-			int regdest = -1;
-			int immediate = -1;
-			instr.setProgramCounter(curr_pc);
-			instr.setOperationType(opr);
-
-			if(opr == OperationType.jmp || opr == OperationType.beq || opr == OperationType.bgt
-			|| opr == OperationType.bne || opr == OperationType.blt) {
-				IF_EnableLatch.setIF_enable(false);
-			}
-
-			if(opr == OperationType.add || opr == OperationType.sub || opr == OperationType.mul || opr == OperationType.div ||
-			opr == OperationType.and || opr == OperationType.or || opr == OperationType.xor ||opr == OperationType.slt ||
-			opr == OperationType.sll || opr == OperationType.srl || opr == OperationType.sra){ 
-					needtow =1; //R3 type
-					rs1.setOperandType(Operand.OperandType.Register);
-				    rs2.setOperandType(Operand.OperandType.Register);
-					rd.setOperandType(Operand.OperandType.Register);
-
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
-					regdest = Integer.parseInt((binaryInst.substring(15, 20)), 2);
-
-					rs1.setValue(regsrc1);
-					rs2.setValue(regsrc2);
-					rd.setValue(regdest);
-					
-					if(isConflict(regsrc1, regsrc2)){
-						this.conflictObserved();
-						chk = 1;
-					}
-
-					if(chk == 0){
-					instr.setSourceOperand1(rs1);
-					instr.setSourceOperand2(rs2);
-					instr.setDestinationOperand(rd);
-					}
-			}
-			else if(opr == OperationType.beq || opr == OperationType.bgt || opr == OperationType.blt || opr == OperationType.bne){
-					needtow = 3;
-					rs1.setOperandType(Operand.OperandType.Register);
-					rs2.setOperandType(Operand.OperandType.Register);
-					imm.setOperandType(Operand.OperandType.Immediate);
-
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
-					immediate = toInteger(binaryInst.substring(15, 32));
-
-					rs1.setValue(regsrc1);
-					rs2.setValue(regsrc2);
-					imm.setValue(immediate);
-					
-					if(isConflict(regsrc1, regsrc2)){
-						this.conflictObserved();
-						chk = 1;
-					}
-
-					if(chk == 0){
-					instr.setSourceOperand1(rs1);
-					instr.setSourceOperand2(rs2);
-					instr.setDestinationOperand(imm);
-					}
-			}
-			else if(opr == OperationType.jmp){
-					needtow =2;
-					regdest = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					immediate = toInteger(binaryInst.substring(10, 32));
-					if(immediate != 0){
-						jump.setOperandType(Operand.OperandType.Immediate);
-						jump.setValue(immediate);
-					}
-					else{
-						jump.setOperandType(Operand.OperandType.Register);
-						jump.setValue(regdest);
-					}
-					instr.setDestinationOperand(jump); 
-			}
-			else if( opr == OperationType.end){
-				needtow =5;
-				IF_EnableLatch.setIF_enable(false);
+		if (!IF_OF_Latch.isOF_Busy()) {
+			if (IF_EnableLatch.isIF_Busy()) {
+				OF_EX_Latch.setEX_Lock(true);
 			}
 			else{
-					//for R2I types
-					needtow = 4;
-					rs1.setOperandType(Operand.OperandType.Register);
-					rs2.setOperandType(Operand.OperandType.Immediate);
-					rd.setOperandType(Operand.OperandType.Register);
+				if(IF_OF_Latch.isOF_enable()) {
+					Statistics.setNumberOfOFStageInstructions(Statistics.getNumberOfOFStageInstructions() + 1);
+					int inst = IF_OF_Latch.getInstruction();
+					int curr_pc = containingProcessor.getRegisterFile().getProgramCounter();
+					String binaryInst =  toBinary(inst, 32);
 
-					regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
-					immediate = toInteger(binaryInst.substring(15, 32));
-					regdest = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+					OperationType[] operationTypes = OperationType.values(); //getting all operation types from OperationType enum
+					int opCodeInt = Integer.parseInt(binaryInst.substring(0, 5), 2);
+					OperationType opr = operationTypes[opCodeInt];
 
-					rs1.setValue(regsrc1);
-					rs2.setValue(immediate);
-					rd.setValue(regdest);
-					
-					if(isConflict(regsrc1, regsrc1)){
-						this.conflictObserved();
-						chk = 1;
+					Instruction instr = new Instruction();
+					Operand rs1 = new Operand();
+					Operand rs2 = new Operand();
+					Operand rd = new Operand();
+					Operand jump = new Operand();
+					Operand imm = new Operand();
+					int needtow = 0;
+					int chk = 0;
+					int regsrc1 = -1;
+					int regsrc2 = -1;
+					int regdest = -1;
+					int immediate = -1;
+					instr.setProgramCounter(curr_pc);
+					instr.setOperationType(opr);
+
+					if(opr == OperationType.jmp || opr == OperationType.beq || opr == OperationType.bgt
+					|| opr == OperationType.bne || opr == OperationType.blt) {
+						IF_EnableLatch.setIF_enable(false);
 					}
 
-					if(chk == 0){
-					instr.setSourceOperand1(rs1);
-					instr.setSourceOperand2(rs2);
-					instr.setDestinationOperand(rd);
+					if(opr == OperationType.add || opr == OperationType.sub || opr == OperationType.mul || opr == OperationType.div ||
+					opr == OperationType.and || opr == OperationType.or || opr == OperationType.xor ||opr == OperationType.slt ||
+					opr == OperationType.sll || opr == OperationType.srl || opr == OperationType.sra){ 
+							needtow =1; //R3 type
+							rs1.setOperandType(Operand.OperandType.Register);
+							rs2.setOperandType(Operand.OperandType.Register);
+							rd.setOperandType(Operand.OperandType.Register);
+
+							regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+							regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+							regdest = Integer.parseInt((binaryInst.substring(15, 20)), 2);
+
+							rs1.setValue(regsrc1);
+							rs2.setValue(regsrc2);
+							rd.setValue(regdest);
+							
+							if(isConflict(regsrc1, regsrc2)){
+								this.conflictObserved();
+								chk = 1;
+							}
+
+							if(chk == 0){
+							instr.setSourceOperand1(rs1);
+							instr.setSourceOperand2(rs2);
+							instr.setDestinationOperand(rd);
+							}
 					}
-			}
-			if(needtow!=0){
-			//System.out.println("Status:" + needtow);
-			}
-			OF_EX_Latch.setInstruction(instr);
-			OF_EX_Latch.setEX_enable(true);
-			if(!OF_EX_Latch.isEX_Locked()){
-				IF_OF_Latch.setOF_enable(false);
+					else if(opr == OperationType.beq || opr == OperationType.bgt || opr == OperationType.blt || opr == OperationType.bne){
+							needtow = 3;
+							rs1.setOperandType(Operand.OperandType.Register);
+							rs2.setOperandType(Operand.OperandType.Register);
+							imm.setOperandType(Operand.OperandType.Immediate);
+
+							regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+							regsrc2 = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+							immediate = toInteger(binaryInst.substring(15, 32));
+
+							rs1.setValue(regsrc1);
+							rs2.setValue(regsrc2);
+							imm.setValue(immediate);
+							
+							if(isConflict(regsrc1, regsrc2)){
+								this.conflictObserved();
+								chk = 1;
+							}
+
+							if(chk == 0){
+							instr.setSourceOperand1(rs1);
+							instr.setSourceOperand2(rs2);
+							instr.setDestinationOperand(imm);
+							}
+					}
+					else if(opr == OperationType.jmp){
+							needtow =2;
+							regdest = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+							immediate = toInteger(binaryInst.substring(10, 32));
+							if(immediate != 0){
+								jump.setOperandType(Operand.OperandType.Immediate);
+								jump.setValue(immediate);
+							}
+							else{
+								jump.setOperandType(Operand.OperandType.Register);
+								jump.setValue(regdest);
+							}
+							instr.setDestinationOperand(jump); 
+					}
+					else if( opr == OperationType.end){
+						needtow =5;
+						IF_EnableLatch.setIF_enable(false);
+					}
+					else{
+							//for R2I types
+							needtow = 4;
+							rs1.setOperandType(Operand.OperandType.Register);
+							rs2.setOperandType(Operand.OperandType.Immediate);
+							rd.setOperandType(Operand.OperandType.Register);
+
+							regsrc1 = Integer.parseInt((binaryInst.substring(5, 10)), 2);
+							immediate = toInteger(binaryInst.substring(15, 32));
+							regdest = Integer.parseInt((binaryInst.substring(10, 15)), 2);
+
+							rs1.setValue(regsrc1);
+							rs2.setValue(immediate);
+							rd.setValue(regdest);
+							
+							if(isConflict(regsrc1, regsrc1)){
+								this.conflictObserved();
+								chk = 1;
+							}
+
+							if(chk == 0){
+							instr.setSourceOperand1(rs1);
+							instr.setSourceOperand2(rs2);
+							instr.setDestinationOperand(rd);
+							}
+					}
+					if(needtow!=0){
+					//System.out.println("Status:" + needtow);
+					}
+					OF_EX_Latch.setInstruction(instr);
+					OF_EX_Latch.setEX_enable(true);
+					if(!OF_EX_Latch.isEX_Locked()){
+						IF_OF_Latch.setOF_enable(false);
+					}
+				}
 			}
 		}
 	}

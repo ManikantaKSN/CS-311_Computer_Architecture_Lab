@@ -23,8 +23,8 @@ public class IF_EnableLatchType {
 		return IF_Busy; 
 	}
 
-	public void setIF_Busy(boolean if_busy) { 
-		IF_Busy = if_busy; 
+	public void setIF_Busy(boolean val) { 
+		IF_Busy = val; 
 	}
 
 }
