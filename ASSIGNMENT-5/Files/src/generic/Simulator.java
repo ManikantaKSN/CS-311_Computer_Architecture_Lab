@@ -50,7 +50,6 @@ public class Simulator {
 			int n2 = 0; //Bytes n1 + 1 to n2 of memory have text/code segment stored in them
 
 			//sets pc to the memory address of the first instruction
-			
 			if((trl = bis.read(temp, 0, 4)) != -1){
 				check = false;
 				pc = ByteBuffer.wrap(temp).getInt();

@@ -35,16 +35,13 @@ public class InstructionFetch implements Element {
 					containingProcessor.getRegisterFile().setProgramCounter(branchPC);
 					EX_IF_Latch.setEX_IF_enable(false);
 				}
-
-				int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-				Simulator.setNoOfInstructions( Simulator.getNoOfInstructions() + 1 );
-				Simulator.getEventQueue().addEvent(
-						new MemoryReadEvent(
-								Clock.getCurrentTime() + Configuration.mainMemoryLatency, this,
-								containingProcessor.getMainMemory(), currentPC)
-				);
+				int curr_PC = containingProcessor.getRegisterFile().getProgramCounter();
+				Simulator.setNoOfInstructions(Simulator.getNoOfInstructions() + 1);
+				Simulator.getEventQueue().addEvent(new MemoryReadEvent
+						(Clock.getCurrentTime() + Configuration.mainMemoryLatency, this,
+						containingProcessor.getMainMemory(), curr_PC));
 				IF_EnableLatch.setIF_Busy(true);
-				containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+				containingProcessor.getRegisterFile().setProgramCounter(curr_PC + 1);
 			}
 		}
 	}
@@ -58,7 +55,6 @@ public class InstructionFetch implements Element {
 		else if (e.getEventType() == Event.EventType.MemoryResponse){
 			MemoryResponseEvent event = (MemoryResponseEvent) e ;
 			IF_OF_Latch.setInstruction(event.getValue());
-
 			IF_EnableLatch.setIF_Busy(false);
 			IF_OF_Latch.setOF_enable(true);
 		}

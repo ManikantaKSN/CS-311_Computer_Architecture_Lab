@@ -1,0 +1,194 @@
+Buildfile: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\build.xml
+
+build-subprojects:
+
+init:
+     [copy] Copying 1 file to C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\bin
+
+build-project:
+     [echo] CustomISAAssembler: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\build.xml
+    [javac] Compiling 7 source files to C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\bin
+    [javac] warning: [options] bootstrap class path not set in conjunction with -source 8
+    [javac] warning: [options] source value 8 is obsolete and will be removed in a future release
+    [javac] warning: [options] target value 8 is obsolete and will be removed in a future release
+    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+    [javac] 4 warnings
+
+build:
+
+make-jar:
+      [jar] Building jar: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\jars\assembler.jar
+
+BUILD SUCCESSFUL
+Total time: 1 second
+Symbol Table :
+[{a=0, b=1, main=2}]
+
+Parsed instructions :
+[[PC=2	load	[Register:0]	[Label:a]	[Register:4]
+, PC=3	end	null	null	null
+]]
+Symbol Table :
+[{a=0, palindrome=13, loop=3, main=1}]
+
+Parsed instructions :
+[[PC=1	load	[Register:0]	[Label:a]	[Register:3]
+, PC=2	sub	[Register:7]	[Register:7]	[Register:7]
+, PC=3	divi	[Register:3]	[Immediate:10]	[Register:4]
+, PC=4	muli	[Register:7]	[Immediate:10]	[Register:7]
+, PC=5	add	[Register:7]	[Register:31]	[Register:7]
+, PC=6	divi	[Register:3]	[Immediate:10]	[Register:3]
+, PC=7	bgt	[Register:3]	[Register:0]	[Label:loop]
+, PC=8	load	[Register:0]	[Label:a]	[Register:5]
+, PC=9	beq	[Register:5]	[Register:7]	[Label:palindrome]
+, PC=10	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=11	subi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=12	end	null	null	null
+, PC=13	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=14	addi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=15	end	null	null	null
+]]
+Symbol Table :
+[{prime=11, a=0, for=6, main=1, notprime=14}]
+
+Parsed instructions :
+[[PC=1	load	[Register:0]	[Label:a]	[Register:3]
+, PC=2	sub	[Register:4]	[Register:4]	[Register:4]
+, PC=3	divi	[Register:3]	[Immediate:2]	[Register:4]
+, PC=4	sub	[Register:6]	[Register:6]	[Register:6]
+, PC=5	addi	[Register:6]	[Immediate:2]	[Register:6]
+, PC=6	bgt	[Register:6]	[Register:4]	[Label:prime]
+, PC=7	div	[Register:3]	[Register:6]	[Register:7]
+, PC=8	beq	[Register:0]	[Register:31]	[Label:notprime]
+, PC=9	addi	[Register:6]	[Immediate:1]	[Register:6]
+, PC=10	jmp	null	null	[Label:for]
+, PC=11	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=12	addi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=13	end	null	null	null
+, PC=14	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=15	subi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=16	end	null	null	null
+]]
+Symbol Table :
+[{a=0, loop=13, loop4=26, loop2=18, loop3=22, main=9, n=8, endl=29}]
+
+Parsed instructions :
+[[PC=9	load	[Register:0]	[Label:n]	[Register:3]
+, PC=10	subi	[Register:3]	[Immediate:1]	[Register:4]
+, PC=11	subi	[Register:0]	[Immediate:1]	[Register:5]
+, PC=12	addi	[Register:0]	[Immediate:0]	[Register:6]
+, PC=13	addi	[Register:5]	[Immediate:1]	[Register:5]
+, PC=14	addi	[Register:5]	[Immediate:0]	[Register:6]
+, PC=15	bgt	[Register:4]	[Register:5]	[Label:loop2]
+, PC=16	beq	[Register:4]	[Register:5]	[Label:endl]
+, PC=17	jmp	null	null	[Label:loop]
+, PC=18	addi	[Register:6]	[Immediate:1]	[Register:6]
+, PC=19	bgt	[Register:3]	[Register:6]	[Label:loop3]
+, PC=20	beq	[Register:3]	[Register:6]	[Label:loop]
+, PC=21	jmp	null	null	[Label:loop2]
+, PC=22	load	[Register:5]	[Label:a]	[Register:7]
+, PC=23	load	[Register:6]	[Label:a]	[Register:8]
+, PC=24	bgt	[Register:8]	[Register:7]	[Label:loop4]
+, PC=25	jmp	null	null	[Label:loop2]
+, PC=26	store	[Register:7]	[Label:a]	[Register:6]
+, PC=27	store	[Register:8]	[Label:a]	[Register:5]
+, PC=28	jmp	null	null	[Label:loop2]
+, PC=29	end	null	null	null
+]]
+Buildfile: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\build.xml
+
+build-subprojects:
+
+init:
+     [copy] Copying 1 file to C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\bin
+
+build-project:
+     [echo] CustomISAAssembler: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\build.xml
+    [javac] Compiling 6 source files to C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\bin
+    [javac] warning: [options] bootstrap class path not set in conjunction with -source 8
+    [javac] warning: [options] source value 8 is obsolete and will be removed in a future release
+    [javac] warning: [options] target value 8 is obsolete and will be removed in a future release
+    [javac] warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+    [javac] 4 warnings
+
+build:
+
+make-jar:
+      [jar] Building jar: C:\AlphaParadise\1.CSE\SEM5\CA\CS-311_Computer_Architecture_Lab\ASSIGNMENT-2\Files\submissions\jars\assembler.jar
+
+BUILD SUCCESSFUL
+Total time: 1 second
+Symbol Table :
+[{a=0, b=1, main=2}]
+
+Parsed instructions :
+[[PC=2	load	[Register:0]	[Label:a]	[Register:4]
+, PC=3	end	null	null	null
+]]
+Symbol Table :
+[{a=0, palindrome=13, loop=3, main=1}]
+
+Parsed instructions :
+[[PC=1	load	[Register:0]	[Label:a]	[Register:3]
+, PC=2	sub	[Register:7]	[Register:7]	[Register:7]
+, PC=3	divi	[Register:3]	[Immediate:10]	[Register:4]
+, PC=4	muli	[Register:7]	[Immediate:10]	[Register:7]
+, PC=5	add	[Register:7]	[Register:31]	[Register:7]
+, PC=6	divi	[Register:3]	[Immediate:10]	[Register:3]
+, PC=7	bgt	[Register:3]	[Register:0]	[Label:loop]
+, PC=8	load	[Register:0]	[Label:a]	[Register:5]
+, PC=9	beq	[Register:5]	[Register:7]	[Label:palindrome]
+, PC=10	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=11	subi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=12	end	null	null	null
+, PC=13	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=14	addi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=15	end	null	null	null
+]]
+Symbol Table :
+[{prime=11, a=0, for=6, main=1, notprime=14}]
+
+Parsed instructions :
+[[PC=1	load	[Register:0]	[Label:a]	[Register:3]
+, PC=2	sub	[Register:4]	[Register:4]	[Register:4]
+, PC=3	divi	[Register:3]	[Immediate:2]	[Register:4]
+, PC=4	sub	[Register:6]	[Register:6]	[Register:6]
+, PC=5	addi	[Register:6]	[Immediate:2]	[Register:6]
+, PC=6	bgt	[Register:6]	[Register:4]	[Label:prime]
+, PC=7	div	[Register:3]	[Register:6]	[Register:7]
+, PC=8	beq	[Register:0]	[Register:31]	[Label:notprime]
+, PC=9	addi	[Register:6]	[Immediate:1]	[Register:6]
+, PC=10	jmp	null	null	[Label:for]
+, PC=11	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=12	addi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=13	end	null	null	null
+, PC=14	sub	[Register:10]	[Register:10]	[Register:10]
+, PC=15	subi	[Register:10]	[Immediate:1]	[Register:10]
+, PC=16	end	null	null	null
+]]
+Symbol Table :
+[{a=0, loop=13, loop4=26, loop2=18, loop3=22, main=9, n=8, endl=29}]
+
+Parsed instructions :
+[[PC=9	load	[Register:0]	[Label:n]	[Register:3]
+, PC=10	subi	[Register:3]	[Immediate:1]	[Register:4]
+, PC=11	subi	[Register:0]	[Immediate:1]	[Register:5]
+, PC=12	addi	[Register:0]	[Immediate:0]	[Register:6]
+, PC=13	addi	[Register:5]	[Immediate:1]	[Register:5]
+, PC=14	addi	[Register:5]	[Immediate:0]	[Register:6]
+, PC=15	bgt	[Register:4]	[Register:5]	[Label:loop2]
+, PC=16	beq	[Register:4]	[Register:5]	[Label:endl]
+, PC=17	jmp	null	null	[Label:loop]
+, PC=18	addi	[Register:6]	[Immediate:1]	[Register:6]
+, PC=19	bgt	[Register:3]	[Register:6]	[Label:loop3]
+, PC=20	beq	[Register:3]	[Register:6]	[Label:loop]
+, PC=21	jmp	null	null	[Label:loop2]
+, PC=22	load	[Register:5]	[Label:a]	[Register:7]
+, PC=23	load	[Register:6]	[Label:a]	[Register:8]
+, PC=24	bgt	[Register:8]	[Register:7]	[Label:loop4]
+, PC=25	jmp	null	null	[Label:loop2]
+, PC=26	store	[Register:7]	[Label:a]	[Register:6]
+, PC=27	store	[Register:8]	[Label:a]	[Register:5]
+, PC=28	jmp	null	null	[Label:loop2]
+, PC=29	end	null	null	null
+]]
