@@ -1,12 +1,18 @@
 package processor.pipeline;
 
+import configuration.Configuration;
+import generic.Element;
+import generic.Event;
+import generic.ExecutionCompleteEvent;
 import generic.Instruction;
 import generic.Statistics;
+import processor.Clock;
 import processor.Processor;
 import generic.Instruction.OperationType;
 import generic.Operand.OperandType;
+import generic.Simulator;
 
-public class Execute {
+public class Execute implements Element{
 	Processor containingProcessor;
 	OF_EX_LatchType OF_EX_Latch;
 	EX_MA_LatchType EX_MA_Latch;
@@ -64,6 +70,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 + sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case addi:
 						checking = true;
@@ -71,6 +78,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 + imm;
+						event_scheduler(opr,this);
 						break;
 					case sub:
 						checking = true;
@@ -78,6 +86,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 - sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case subi:
 						checking = true;
@@ -85,6 +94,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 - imm;
+						event_scheduler(opr,this);
 						break;
 					case mul:
 						checking = true;
@@ -92,6 +102,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 * sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case muli:
 						checking = true;
@@ -99,6 +110,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 * imm;
+						event_scheduler(opr,this);
 						break;
 					case div:
 						checking = true;
@@ -108,6 +120,7 @@ public class Execute {
 						aluResult = sourceOperand1 / sourceOperand2;
 						rem = (sourceOperand1 % sourceOperand2);
 						containingProcessor.getRegisterFile().setValue(31, rem);
+						event_scheduler(opr,this);
 						break;
 					case divi:
 						checking = true;
@@ -117,6 +130,7 @@ public class Execute {
 						aluResult = sourceOperand1 / imm;
 						rem = (sourceOperand1 % imm);
 						containingProcessor.getRegisterFile().setValue(31, rem);
+						event_scheduler(opr,this);
 						break;
 					case and:
 						checking = true;
@@ -124,6 +138,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 & sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case andi:
 						checking = true;
@@ -131,6 +146,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 & imm;
+						event_scheduler(opr,this);
 						break;
 					case or:
 						checking = true;
@@ -138,6 +154,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 | sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case ori:
 						checking = true;
@@ -145,6 +162,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 | imm;
+						event_scheduler(opr,this);
 						break;
 					case xor:
 						checking = true;
@@ -152,6 +170,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 ^ sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case xori:
 						checking = true;
@@ -159,6 +178,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 ^ imm;
+						event_scheduler(opr,this);
 						break;
 					case slt:
 						checking = false;
@@ -169,6 +189,7 @@ public class Execute {
 							aluResult = 1;
 						else
 							aluResult = 0;
+						event_scheduler(opr,this);
 						break;
 					case slti:
 						checking = false;
@@ -179,6 +200,7 @@ public class Execute {
 							aluResult = 1;
 						else
 							aluResult = 0;
+						event_scheduler(opr,this);
 						break;
 					case sll:
 						checking = false;
@@ -186,6 +208,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 << sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case slli:
 						checking = false;
@@ -193,6 +216,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 << imm;
+						event_scheduler(opr,this);
 						break;
 					case srl:
 						checking = false;
@@ -200,6 +224,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 >>> sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case srli:
 						checking = false;
@@ -207,6 +232,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 >>> imm;
+						event_scheduler(opr,this);
 						break;
 					case sra:
 						checking = false;
@@ -214,6 +240,7 @@ public class Execute {
 						aluResult =-1;
 						sourceOperand2 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand2().getValue());
 						aluResult = sourceOperand1 >> sourceOperand2;
+						event_scheduler(opr,this);
 						break;
 					case srai:
 						checking = false;
@@ -221,6 +248,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 >> imm;
+						event_scheduler(opr,this);
 						break;
 					case load:
 						checking = false;
@@ -228,6 +256,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 + imm;
+						event_scheduler(opr,this);
 						break;
 					case store:
 						checking = false;
@@ -235,6 +264,7 @@ public class Execute {
 						aluResult =-1;
 						imm = instr.getSourceOperand2().getValue();
 						aluResult = sourceOperand1 + imm;
+						event_scheduler(opr,this);
 						break;
 					case jmp:
 						checking = true;
@@ -248,6 +278,7 @@ public class Execute {
 						}
 						aluResult = curr_pc + imm;
 						EX_IF_Latch.setEX_IF_enable(true, aluResult);
+						event_scheduler(opr,this);
 						break;
 					case beq:
 						checking = true;
@@ -259,6 +290,7 @@ public class Execute {
 							aluResult = curr_pc + imm;
 							EX_IF_Latch.setEX_IF_enable(true, aluResult);
 						}
+						event_scheduler(opr,this);
 						break;
 					case bne:
 						checking = true;
@@ -270,6 +302,7 @@ public class Execute {
 							aluResult = curr_pc + imm;
 							EX_IF_Latch.setEX_IF_enable(true, aluResult);
 						}
+						event_scheduler(opr,this);
 						break;
 					case blt:
 						checking = true;
@@ -281,7 +314,8 @@ public class Execute {
 							aluResult = curr_pc + imm;
 							EX_IF_Latch.setEX_IF_enable(true, aluResult);
 						}
-							break;
+						event_scheduler(opr,this);
+						break;
 					case bgt:
 						checking = true;
 						sourceOperand1 = containingProcessor.getRegisterFile().getValue(instr.getSourceOperand1().getValue());
@@ -292,6 +326,7 @@ public class Execute {
 							aluResult = curr_pc + imm;
 							EX_IF_Latch.setEX_IF_enable(true, aluResult);
 						}
+						event_scheduler(opr,this);
 						break;
 					case end:
 						aluResult=-1;
@@ -308,5 +343,38 @@ public class Execute {
 				EX_MA_Latch.setMA_enable(true);
 			}
 		}
+	}
+	public void event_scheduler(OperationType opr, Execute execute){
+		long lat;
+		if(opr == OperationType.mul || opr == OperationType.muli)
+		{
+			lat=Configuration.multiplier_latency;
+		}
+		else if(opr == OperationType.div || opr == OperationType.divi)
+		{
+			lat=Configuration.divider_latency;
+		}
+		else
+		{
+			lat=Configuration.ALU_latency;
+		}
+		Simulator.getEventQueue().addEvent(
+				new ExecutionCompleteEvent(
+						Clock.getCurrentTime()+lat,
+						execute,execute));
+		OF_EX_Latch.setEX_Busy(true);
+	}
+	@Override
+	public void handleEvent(Event event)
+	{
+		if(EX_MA_Latch.isMA_Busy()) {
+			event.setEventTime(Clock.getCurrentTime()+1);
+			Simulator.getEventQueue().addEvent(event);
+		}
+		else {
+			OF_EX_Latch.setEX_enable(false);
+			EX_MA_Latch.setMA_enable(true);
+			OF_EX_Latch.setEX_Busy(false);
+		}	
 	}
 }

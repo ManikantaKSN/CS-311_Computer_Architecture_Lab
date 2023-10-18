@@ -11,7 +11,7 @@ public class Simulator {
 	static Processor processor;
 	static boolean simulationComplete;
 	static EventQueue eventQueue;
-	public static int noOfInstructions;
+	static int noOfInstructions;
 	
 	public static void setupSimulation(String assemblyProgramFile, Processor p)
 	{
