@@ -17,6 +17,8 @@ public class Statistics {
 			//Printing statistics in the statfile
 			writer.println("Number of instructions executed = " + numberOfInstructions);
 			writer.println("Number of cycles taken = " + numberOfCycles);
+			writer.println("Number of OF Stalls = " + (numberOfInstructions - numberOfRWStageInstructions));
+			writer.println("Number of Wrong Branches Instructions = " + numberOfBranchesTaken);
 			writer.println("IPC =" + IPC);
 			writer.close();
 		}

@@ -16,7 +16,6 @@ public class Simulator {
 
 	public static String binary_conv(Operand opr, int len, int x) {
 		int val;
-		String s = "";
 		if (opr == null) {
 			val = x;
 		} else if (opr.getOperandType() == OperandType.Label) {
@@ -232,7 +231,8 @@ public class Simulator {
 			}
 			// 5. close the file
 			op_st.close();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
