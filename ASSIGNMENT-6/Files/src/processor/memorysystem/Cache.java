@@ -22,19 +22,18 @@ public class Cache implements Element {
         this.cacheSize = size;
         this.noOfLines = size / 4;
         this.noOfSets = noOfLines / 2;
-
         switch(size){
-            case 8:
+            case 16:
                 cacheLatency = 1;
                 break;
-            case 32:
+            case 128:
                 cacheLatency = 2;
                 break;
-            case 128:
-                cacheLatency = 4;
+            case 512:
+                cacheLatency = 3;
                 break;
             case 1024:
-                cacheLatency = 8;
+                cacheLatency = 4;
                 break;
         }
         actualCache = new CacheLine[noOfLines];
@@ -42,7 +41,9 @@ public class Cache implements Element {
             actualCache[i] = new CacheLine();
     }
 
-    public int getCacheLatency() { return cacheLatency; }
+    public int getCacheLatency() { 
+        return cacheLatency; 
+    }
 
     public static String toBinary(int x, int len){
         if (len > 0) {
@@ -55,12 +56,8 @@ public class Cache implements Element {
     public void handleCacheMiss(int address, Element requestingElement){
         Simulator.getEventQueue().addEvent(
                 new MemoryReadEvent(
-                        Clock.getCurrentTime() + Configuration.mainMemoryLatency,
-                        this,
-                        containingProcessor.getMainMemory(),
-                        address
-                )
-        );
+                        Clock.getCurrentTime() + Configuration.mainMemoryLatency, this,
+                        containingProcessor.getMainMemory(), address));
         cacheMissAddress = address;
         cacheMissElement = requestingElement;
     }
@@ -81,12 +78,7 @@ public class Cache implements Element {
         if(isRead){
             Simulator.getEventQueue().addEvent(
                     new MemoryResponseEvent(
-                            Clock.getCurrentTime(),
-                            this,
-                            cacheMissElement,
-                            value
-                    )
-            );
+                            Clock.getCurrentTime(), this, cacheMissElement, value));
         }
         else{
             cacheWrite(cacheMissAddress, writeData, cacheMissElement);
@@ -108,12 +100,8 @@ public class Cache implements Element {
         if(cacheTag == address){
             Simulator.getEventQueue().addEvent(
                     new MemoryResponseEvent(
-                            Clock.getCurrentTime(),
-                            this,
-                            requestingElement,
-                            actualCache[cacheAddress].getData()
-                    )
-            );
+                            Clock.getCurrentTime(), this, requestingElement,
+                            actualCache[cacheAddress].getData()));
         }
         else{
             isRead = true;
@@ -137,13 +125,8 @@ public class Cache implements Element {
             actualCache[cacheAddress].setData(value);
             Simulator.getEventQueue().addEvent(
                     new MemoryWriteEvent(
-                            Clock.getCurrentTime(),
-                            this,
-                            containingProcessor.getMainMemory(),
-                            address,
-                            value
-                    )
-            );
+                            Clock.getCurrentTime(), this, containingProcessor.getMainMemory(),
+                            address, value));
             ((MemoryAccess)requestingElement).EX_MA_Latch.setMA_Busy(false);
             ((MemoryAccess)requestingElement).MA_RW_Latch.setRW_enable(true);
         }

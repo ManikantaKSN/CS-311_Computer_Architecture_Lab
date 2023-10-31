@@ -44,7 +44,7 @@ public class MemoryAccess implements Element{
 				instruction = inst;
 				int aluResult = EX_MA_Latch.getAluResult();
 				OperationType opr = inst.getOperationType();
-
+				MA_RW_Latch.setInstruction(instruction);
 				if(opr == OperationType.load){
 					Simulator.getEventQueue().addEvent(
 							new MemoryReadEvent(

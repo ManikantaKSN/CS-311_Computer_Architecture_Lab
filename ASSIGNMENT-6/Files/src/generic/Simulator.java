@@ -109,11 +109,10 @@ public class Simulator {
 			processor.getIFUnit().performIF();
 			Clock.incrementClock();
 			noOfCycles += 1;
-
-			Statistics.setNumberOfInstructions(noOfInstructions);
-			Statistics.setNumberOfCycles(noOfCycles);
-			Statistics.setIPC();
 		}
+		Statistics.setNumberOfInstructions(noOfInstructions);
+		Statistics.setNumberOfCycles(noOfCycles);
+		Statistics.setIPC();
 	}
 	
 	public static EventQueue getEventQueue(){
